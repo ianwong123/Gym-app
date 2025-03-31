@@ -4,3 +4,6 @@
 # Ignore SSL Keys
 /web/ssl/*
 
+# Ignore database
+/database
+
