@@ -8,4 +8,5 @@
 /database
 
 # Ignore placeholder
-/.placeholder
+/.gitignore
+
