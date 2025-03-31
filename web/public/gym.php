@@ -3,9 +3,9 @@
 /*
 - Connection to Database
 */
-$db_hostname = "database";
-$db_database = "sgiwong";
-$db_username = "root";
+$db_hostname = getenv('DB_HOST');
+$db_database = getenv('DB_NAME');
+$db_username = getenv('DB_USER');
 $db_password = getenv('DB_PASSWORD');
 $db_charset = "utf8mb4";
 
