@@ -1,0 +1,39 @@
+version: '3.8'
+
+services: 
+  web:
+    build: ./web
+    ports: 
+     - "80:80"
+     - "443:443"
+    volumes:
+      - ./web/public:/var/www/html
+      - ./web/nginx.conf:/etc/nginx/nginx.conf
+      - ./web/ssl:/etc/nginx/ssl
+      - nginx_cache:/var/cache/nginx
+    depends on: 
+      - ./app
+
+  app:
+    build: ./app
+    volumes: ./web/public:/var/www/html
+    environment: 
+      DB_HOST: ${DB_HOST} 
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+  database:
+    image: mysql: 8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    voumes:
+      - db_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+
+volumes:
+  db_data:
+  nginx_cache: 
