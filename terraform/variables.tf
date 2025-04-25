@@ -45,19 +45,19 @@ variable "private_subnets" {
 
   default = {
     web_a = {
-      cird_block = "10.1.16.0/20"
+      cidr_block = "10.1.16.0/20"
       az       = "eu-north-1a"
     }
     web_b = {
-      cird_block = "10.1.32.0/20"
+      cidr_block = "10.1.32.0/20"
       az       = "eu-north-1b"
     }
     app_a = {
-      cird_block = "10.1.48.0/20"
+      cidr_block = "10.1.48.0/20"
       az       = "eu-north-1a"
     }
     app_b = {
-      cird_block = "10.1.64.0/20"
+      cidr_block = "10.1.64.0/20"
       az       = "eu-north-1b"
     }
   }
