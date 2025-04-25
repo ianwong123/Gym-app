@@ -1,3 +1,4 @@
+# Public subnet 
 resource "aws_subnet" "public" {
     for_each = var.public_subnets
     vpc_id = aws_vpc.main.id
@@ -10,6 +11,7 @@ resource "aws_subnet" "public" {
     }
 }
 
+# Private subnets 
 resource "aws_subnet" "private" {
     for_each = var.private_subnets
     vpc_id = aws_vpc.main.id
@@ -22,6 +24,7 @@ resource "aws_subnet" "private" {
     } 
 }
 
+# Database subnets 
 resource "aws_subnet" "db" {
     for_each = var.db_subnets
     vpc_id = aws_vpc.main.id
