@@ -11,7 +11,7 @@ variable "region" {
 }
 
 variable "vpc_cidr" {
-  description = "CIRD for VPC"
+  description = "CIDR for VPC"
   type = string
   default = "10.1.0.0/16"
 }
@@ -71,11 +71,11 @@ variable "db_subnets" {
   }))
   default = {
     db_a = {
-      cidr_block = "10.1.0.80/23"
+      cidr_block = "10.1.80.0/23"
       az        = "eu-north-1a"
     }
     db_b = {
-      cidr_block = "10.1.0.82/23"
+      cidr_block = "10.1.82.0/23"
       az        = "eu-north-1b"
     }
   }
