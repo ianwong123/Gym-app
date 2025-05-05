@@ -86,3 +86,8 @@ variable "nat_ami" {
   type = string
   default = "ami-072517490bf2cf3a3"
 }
+
+variable "nat_security_group_id" {
+    description = "The security group ID for the NAT instance"
+    type        = string
+}
