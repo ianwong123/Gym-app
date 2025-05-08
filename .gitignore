@@ -10,4 +10,8 @@
 # Ignore placeholder
 /.gitignore
 
-/.terraform
+.terraform.lock.hcl
+.terraform/
+network-security-plan.tfplan
+
+terraform.tfstate
