@@ -11,6 +11,5 @@ variable "ami_id" {
 }
 
 variable "subnet_ids" {
-    
     type = map(string)
 }
