@@ -19,6 +19,12 @@ module "security" {
   vpc_cidr = var.vpc_cidr
 }
 
+module "compute" {
+  source = "./compute"
+  depends_on = [ module.network ]
+  subnet_ids = module.network.subnet_ids
+}
+
 
 
 
