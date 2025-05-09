@@ -1,3 +1,7 @@
+data "http" "machine_ip" {
+    url = "https://api.ipify.org"
+}
+
 resource "aws_security_group" "nat" {
     name = "${var.project_name}-nat-sg"
     description = "Allow all outbound traffic and only inbound TLS traffic"
@@ -25,6 +29,16 @@ resource "aws_security_group" "app" {
 
     tags = {
         name = "${var.project_name}-app-sg"
+    }
+}
+
+resource "aws_security_group" "bastion" {
+    name = "${var.project_name}-bastion-sg"
+    description = "Bastion Security Group"
+    vpc_id = var.vpc_id
+
+    tags = {
+        name = "${var.project_name}-bastion-sg"
     }
 }
 
@@ -88,6 +102,46 @@ resource "aws_vpc_security_group_egress_rule" "app_to_rds" {
   from_port                     = 5432 # PostgreSQL
   to_port                       = 5432
 }*/
+
+# Bastion Ingress Security Group Rules Ipv4
+resource aws_vpc_security_group_ingress_rule "bastion_from_web_ipv4" {
+    security_group_id = aws_security_group.bastion.id
+    cidr_ipv4 = "${chomp(data.http.machine_ip.response_body)}/32"
+    ip_protocol = "tcp"
+    from_port = 22
+    to_port = 22
+
+    tags = {
+        name = "${var.project_name}-bastion-ingress-sg"
+    }
+}
+
+# Bastion Web Egress Security Group Rules Ipv4
+resource aws_vpc_security_group_egress_rule "bastion_to_web_ipv4" {
+    security_group_id = aws_security_group.bastion.id
+    referenced_security_group_id = aws_security_group.web.id
+    ip_protocol = "tcp"
+    from_port = 22
+    to_port = 22
+
+    tags = {
+        name = "${var.project_name}-bastion-web-egress-sg"
+    }
+}
+
+# Bastion App Egress Security Group Rules Ipv4
+resource aws_vpc_security_group_egress_rule "bastion_to_app_ipv4" {
+    security_group_id = aws_security_group.bastion.id
+    referenced_security_group_id = aws_security_group.app.id
+    ip_protocol = "tcp"
+    from_port = 22
+    to_port = 22
+
+    tags = {
+        name = "${var.project_name}-bastion-app-egress-sg"
+    }
+}
+
 
 # NAT Ingress Security Group Rules Ipv4
 resource aws_vpc_security_group_ingress_rule "allow_tls_ipv4" {
