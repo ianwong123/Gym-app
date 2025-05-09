@@ -1,6 +1,6 @@
 resource "aws_instance" "bastion" {
     subnet_id = "${var.subnet_ids["public_az1"]}"
-    instance_type = "t2.micro"
+    instance_type = "t3.micro"
     ami = var.ami_id
     associate_public_ip_address = true
     vpc_security_group_ids = [var.bastion_security_group_id]
