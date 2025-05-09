@@ -2,6 +2,7 @@ resource "aws_instance" "web_a" {
     ami = var.ami_id
     instance_type = "t3.micro"
     subnet_id = var.subnet_ids["web_az1"]
+    vpc_security_group_ids = [var.web_security_group_id]
 
     tags = {
         Name = "${var.project_name}-web-a"
@@ -13,6 +14,7 @@ resource "aws_instance" "web_b" {
     ami = var.ami_id
     instance_type = "t3.micro"
     subnet_id = var.subnet_ids["web_az2"]
+    vpc_security_group_ids = [var.web_security_group_id]
 
     tags = {
         Name = "${var.project_name}-web-b"
@@ -24,6 +26,7 @@ resource "aws_instance" "app_a" {
     ami = var.ami_id
     instance_type = "t3.micro"
     subnet_id = var.subnet_ids["app_az1"]
+    vpc_security_group_ids = [var.app_security_group_id]
 
     tags = {
         Name = "${var.project_name}-app-a"
@@ -35,6 +38,7 @@ resource "aws_instance" "app_b" {
     ami = var.ami_id
     instance_type = "t3.micro"
     subnet_id = var.subnet_ids["app_az2"]
+    vpc_security_group_ids = [var.app_security_group_id]
 
     tags = {
         Name = "${var.project_name}-app-b"
