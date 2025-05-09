@@ -5,7 +5,7 @@ variable "project_name" {
 }
 
 variable "ami_id" {
-    description = "AMI ID for EC2 instances"
+    description = "T3.micro AMI ID for EC2 instances"
     type = string
     default = "ami-01f5d894355bd0f64"
 }
@@ -23,3 +23,9 @@ variable "app_security_group_id" {
   description = "Security group Id for EC2 instances in the app tier"
   type = string
 }
+
+variable "bastion_security_group_id" {
+  description = "Security group ID for bastion host"
+  type = string
+}
+
