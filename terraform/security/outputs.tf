@@ -12,3 +12,8 @@ output "app_security_group_id" {
   description = "The seucrity group ID for EC2 instances in the app tier"
   value       = aws_security_group.app.id
 }
+
+output "bastion_security_group_id" {
+  description = "The security group ID for bastion host"
+  value       = aws_security_group.bastion.id
+}
