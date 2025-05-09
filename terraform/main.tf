@@ -25,6 +25,7 @@ module "compute" {
   subnet_ids = module.network.subnet_ids
   web_security_group_id = module.security.web_security_group_id
   app_security_group_id = module.security.app_security_group_id
+  bastion_security_group_id = module.security.bastion_security_group_id
 }
 
 
