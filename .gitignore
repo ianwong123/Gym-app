@@ -13,5 +13,6 @@
 .terraform.lock.hcl
 .terraform/
 network-security-plan.tfplan
-
-terraform.tfstate
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.*
+/terraform/compute/gym-app-bastion-key.pem
