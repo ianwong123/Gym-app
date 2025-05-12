@@ -1,5 +1,6 @@
 data "http" "machine_ip" {
-    url = "https://api.ipify.org"
+    url = "https://api64.ipify.org"
+
 }
 
 resource "aws_security_group" "nat" {
@@ -110,7 +111,7 @@ resource aws_vpc_security_group_ingress_rule "bastion_from_web_ipv4" {
     ip_protocol = "tcp"
     from_port = 22
     to_port = 22
-
+    
     tags = {
         name = "${var.project_name}-bastion-ingress-sg"
     }
