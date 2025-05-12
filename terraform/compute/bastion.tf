@@ -20,10 +20,11 @@ resource "aws_key_pair" "bastion_key" {
 
 # Generate public and private key 
 resource "tls_private_key" "bastion_key" {
-    algorithm = "ED25519"
+    algorithm = "RSA"
+    rsa_bits  = 4096
 }
 
 resource "local_file" "private_key" {
     content = tls_private_key.bastion_key.private_key_pem
-    filename = "${path.module}/bastion_key.pem"
+    filename = "${path.module}/gym-app-bastion-key.pem"
 }
