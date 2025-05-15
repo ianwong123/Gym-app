@@ -224,6 +224,8 @@ resource "aws_vpc_security_group_egress_rule" "rds_outbound" {
 
 
 # Bastion Ingress Security Group Rules SSH from Client 
+# Allow 0.0.0.0/0 for now for testing purposes until a solution to 
+# the issue of using dynamically obtained local IP is found  
 resource aws_vpc_security_group_ingress_rule "bastion_ssh" {
     security_group_id = aws_security_group.bastion.id
     #cidr_ipv4 = "${data.http.machine_ip.response_body}/32"
