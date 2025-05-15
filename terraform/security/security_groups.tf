@@ -43,6 +43,16 @@ resource "aws_security_group" "bastion" {
     }
 }
 
+resource "aws_security_group" "rds" {
+    name = "${var.project_name}-rds-sg"
+    description = "RDS Security Group"
+    vpc_id = var.vpc_id
+
+    tags = {
+        name = "${var.project_name}-rds-sg"
+    }
+}
+
 # Web Ingress Security Group Rules HTTP Ipv4
 resource aws_vpc_security_group_ingress_rule "web_http" {
     security_group_id = aws_security_group.web.id 
@@ -154,15 +164,64 @@ resource "aws_vpc_security_group_ingress_rule" "bastion_to_app_ping" {
 }
 
 
-
-/* To be added later once RDS is configured
+# Allow Egress Security Group Rules for App to RDS
 resource "aws_vpc_security_group_egress_rule" "app_to_rds" {
   security_group_id             = aws_security_group.app.id
   referenced_security_group_id = aws_security_group.rds.id
   ip_protocol                   = "tcp"
-  from_port                     = 5432 # PostgreSQL
-  to_port                       = 5432
-}*/
+  from_port                     = 3306 
+  to_port                       = 3306
+}
+
+# Allow Ingress Security from App to RDS
+resource "aws_vpc_security_group_ingress_rule" "rds_from_app" {
+  security_group_id = aws_security_group.rds.id
+  referenced_security_group_id = aws_security_group.app.id
+  from_port   = 3306
+  to_port     = 3306
+  ip_protocol = "tcp"
+  description = "MySQL access from App SG"
+
+   tags = {
+        name = "${var.project_name}-RDS-sg"
+    }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "rds_bastion" {
+    security_group_id = aws_security_group.rds.id
+    referenced_security_group_id = aws_security_group.bastion.id
+    ip_protocol = "tcp"
+    from_port = 22
+    to_port = 22
+    description = "Allow SSH from Bastion to RDS SG"
+
+    tags = {
+        name = "${var.project_name}-rds-ingress-sg"
+    }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "rds_ICMP_in" {
+    security_group_id = aws_security_group.rds.id
+    referenced_security_group_id = aws_security_group.bastion.id
+    ip_protocol = "icmp"
+    from_port = -1
+    to_port = -1
+    description = "Allow ICMP from Bastion to RDS SG"
+    
+    tags = {
+        name = "${var.project_name}-rds-ingress-sg"
+    }
+}
+
+resource "aws_vpc_security_group_egress_rule" "rds_outbound" {
+    security_group_id = aws_security_group.rds.id
+    ip_protocol = "tcp"
+    from_port = 3306
+    to_port = 3306
+    cidr_ipv4 = "0.0.0.0/0"
+
+}
+
 
 # Bastion Ingress Security Group Rules SSH from Client 
 resource aws_vpc_security_group_ingress_rule "bastion_ssh" {
