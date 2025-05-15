@@ -11,7 +11,6 @@ resource "aws_instance" "bastion" {
         Tier = "public-a"
     }
 }   
-
 # Generate a SSH key pair for bastion host
 resource "aws_key_pair" "bastion_key" {
     key_name = "${var.project_name}-bastion-key"
