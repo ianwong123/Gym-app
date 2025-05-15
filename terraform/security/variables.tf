@@ -91,3 +91,34 @@ variable "nat_ami" {
   type = string
   default = "ami-072517490bf2cf3a3"
 }
+
+variable "engine" {
+  type = string
+  description = "The database engine"
+}
+
+variable "engine_version" {
+  type = string
+  description = "The version of the database engine"
+}
+
+variable "instance_type" {
+  type = string
+  description = "Instance class for the db"
+}
+
+variable "db_name" {
+  type = string
+  description = "Name of the initial database"
+}
+
+variable "username" {
+  type        = string
+  description = "Username for db"
+}
+
+variable "password" {
+  type        = string
+  description = "Password for the db"
+  sensitive   = true
+}
