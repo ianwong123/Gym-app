@@ -28,7 +28,6 @@ variable "public_subnets" {
       cidr_block = "10.1.0.0/24"
       az        = "eu-north-1a"
     }
-
     public_b = {
       cidr_block = "10.1.1.0/24"
       az        = "eu-north-1b"
@@ -90,4 +89,10 @@ variable "nat_ami" {
 variable "nat_security_group_id" {
     description = "The security group ID for the NAT instance"
     type        = string
+}
+
+variable "endpoint_security_group_id" {
+    description = "The security group ID for the VPC endpoint"
+    type        = string
+  
 }
