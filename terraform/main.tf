@@ -8,7 +8,7 @@ module "network" {
   db_subnets     = var.db_subnets
   nat_ami        = var.nat_ami
   nat_security_group_id = module.security.nat_security_group_id
-
+  endpoint_security_group_id = module.security.endpoint_security_group_id
 }
 
 module "security" {
