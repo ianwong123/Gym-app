@@ -53,6 +53,17 @@ resource "aws_security_group" "rds" {
     }
 }
 
+resource "aws_security_group" "endpoint" {
+    name = "${var.project_name}-endpoint-sg"
+    description = "Endpoint Security Group"
+    vpc_id = var.vpc_id
+
+    tags = {
+        name = "${var.project_name}-endpoint-sg"
+    }
+}
+
+
 # Web Ingress Security Group Rules HTTP Ipv4
 resource aws_vpc_security_group_ingress_rule "web_http" {
     security_group_id = aws_security_group.web.id 
@@ -107,6 +118,19 @@ resource "aws_vpc_security_group_ingress_rule" "web_icmp_in" {
      }
 }
 
+# Web Egress Security Group Rules Ipv4
+resource aws_vpc_security_group_egress_rule "web_to_outbound" {
+    security_group_id = aws_security_group.web.id 
+    ip_protocol = "tcp"
+    from_port = 443
+    to_port = 443
+    description = "Allow outbound HTTPS traffic from Web SG to internet"
+    cidr_ipv4 = "0.0.0.0/0"
+
+    tags = {
+        name = "${var.project_name}-web-egress-sg"
+    }
+}
 
 # Web Egress Security Group Rules Ipv4
 resource aws_vpc_security_group_egress_rule "web_to_app" {
@@ -317,5 +341,31 @@ resource aws_vpc_security_group_egress_rule "allow_all" {
 
     tags = {
         name = "${var.project_name}-nat-sg"
+    }
+}
+
+# Security Group for Ingress Endpoint
+resource "aws_vpc_security_group_ingress_rule" "endpoint_ingress" {
+    security_group_id = aws_security_group.endpoint.id
+    ip_protocol = "tcp"
+    from_port = 443
+    to_port = 443
+    cidr_ipv4 = var.vpc_cidr
+    description = "Allow HTTPS inbound traffic to internet"
+
+    tags = {
+        name = "${var.project_name}-endpoint-sg"
+    }
+}
+
+# Security Group for Egress Endpoint
+resource "aws_vpc_security_group_egress_rule" "endpoint_egress" {
+    security_group_id = aws_security_group.endpoint.id
+    ip_protocol = -1
+    cidr_ipv4 = "0.0.0.0/0"
+    description = "Allow  outbound traffic to internet"
+
+    tags = {
+        name = "${var.project_name}-endpoint-sg"
     }
 }
