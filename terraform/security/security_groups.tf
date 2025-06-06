@@ -1,7 +1,7 @@
-data "http" "machine_ip" {
+/*#data "http" "machine_ip" {
     url = "https://api64.ipify.org"
 
-}
+}*/
 
 resource "aws_security_group" "nat" {
     name = "${var.project_name}-nat-sg"
@@ -188,6 +188,20 @@ resource "aws_vpc_security_group_ingress_rule" "bastion_to_app_ping" {
 }
 
 
+# Allow Egress Security Group Rules for App to NAT
+resource "aws_vpc_security_group_egress_rule" "app_to_nat" {
+  security_group_id             = aws_security_group.app.id
+  referenced_security_group_id = aws_security_group.nat.id
+  ip_protocol                   = "-1"
+  
+  tags = {
+    name = "${var.project_name}-bastion-app-ICMP-sg"
+    }
+    
+  description = "Allow all outbound traffic from App SG to NAT SG"
+}
+
+
 # Allow Egress Security Group Rules for App to RDS
 resource "aws_vpc_security_group_egress_rule" "app_to_rds" {
   security_group_id             = aws_security_group.app.id
@@ -317,13 +331,11 @@ resource aws_vpc_security_group_egress_rule "bastion_icmp_out" {
 }
 
 # NAT Ingress Security Group Rules 
-resource aws_vpc_security_group_ingress_rule "allow_tls" {
+resource aws_vpc_security_group_ingress_rule "allow_app_to_nat" {
     security_group_id = aws_security_group.nat.id 
-    cidr_ipv4 = var.vpc_cidr
-    ip_protocol = "tcp"
-    to_port = 443
-    from_port = 443
-    description = "Allow TLS from VPC CIDR to NAT SG"
+    referenced_security_group_id = aws_security_group.app.id
+    ip_protocol = "-1"
+    description = "Allow APP to NAT SG"
 
     tags = {
       name = "${var.project_name}-nat-sg"
@@ -368,4 +380,44 @@ resource "aws_vpc_security_group_egress_rule" "endpoint_egress" {
     tags = {
         name = "${var.project_name}-endpoint-sg"
     }
+}
+
+
+# For Testing Connection
+# Web Tier to App Tier
+resource "aws_vpc_security_group_ingress_rule" "app_ICMP_in_web" {
+    security_group_id = aws_security_group.app.id
+    referenced_security_group_id = aws_security_group.web.id
+    ip_protocol = "icmp"
+    from_port = -1
+    to_port = -1
+    description = "Allow ICMP from Web Tier to App Tier"
+}
+
+resource "aws_vpc_security_group_egress_rule" "web_ICMP_out_app" {
+    security_group_id = aws_security_group.web.id
+    referenced_security_group_id = aws_security_group.app.id
+    ip_protocol = "icmp"
+    from_port = -1
+    to_port = -1
+    description = "Allow ICMP from Web Tier to App Tier"
+}
+
+# App Tier to Database Tier
+resource "aws_vpc_security_group_ingress_rule" "db_ICMP_in_app" {
+    security_group_id = aws_security_group.rds.id
+    referenced_security_group_id = aws_security_group.app.id
+    ip_protocol = "icmp"
+    from_port = -1
+    to_port = -1
+    description = "Allow ICMP from App Tier to Database Tier"
+}
+
+resource "aws_vpc_security_group_egress_rule" "app_ICMP_out_db" {
+    security_group_id = aws_security_group.app.id
+    referenced_security_group_id = aws_security_group.rds.id
+    ip_protocol = "icmp"
+    from_port = -1
+    to_port = -1
+    description = "Allow ICMP from App Tier to Database Tier"
 }
